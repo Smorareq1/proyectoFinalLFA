@@ -25,28 +25,21 @@ class Grafo:
         self.caracteresEspeciales = {'*', '#'}
         self.CaracteresEspecialesEncontrados = {}
 
+        # Grafo como un diccionario de listas de tuplas para manejar múltiples transiciones
         self.grafo = {
-            'q0': {'q1': 'a'},
-            'q1': {'q2': 'b'},
-            'q2': {'q3': 'a'},
-            'q3': {'q1': 'b', 'q3': 'a', 'q4': '*'},
-            'q4': {'q4': '#', 'q3': 'a', 'q1': 'b'}
+            'q0': [('q1', 'a')],
+            'q1': [('q2', 'b')],
+            'q2': [('q3', 'a')],
+            'q3': [('q1', 'b'), ('q3', 'a'), ('q4', '*')],
+            'q4': [('q4', '#'), ('q3', 'a'), ('q1', 'b')]
         }
         self.estado_inicial = 'q0'
-
-    def mostrar_tabla_transicion(self):
-        print("Tabla de Transiciones:")
-        print(f"{'Estado Actual':<15}{'Estado Siguiente':<20}{'Transición (Carácter)'}")
-        print("-" * 50)
-
-        for estado, transiciones in self.grafo.items():
-            for estado_siguiente, caracter in transiciones.items():
-                print(f"{estado:<15}{estado_siguiente:<20}{caracter}")
 
     def validar_cadena(self, cadena):
         estado_actual = self.estado_inicial
         raiz = NodoDerivacion(estado_actual, 'Inicio')  # Nodo raíz del árbol de derivación
         nodo_actual = raiz
+        transiciones = []  # Lista para almacenar las transiciones realizadas
 
         for char in cadena:
             transicion_valida = False
@@ -54,7 +47,7 @@ class Grafo:
             eleccion = None
 
             # Recorremos todas las transiciones desde el estado actual
-            for estado_siguiente, peso in self.grafo[estado_actual].items():
+            for estado_siguiente, peso in self.grafo[estado_actual]:
                 opciones.append((estado_siguiente, peso))
                 if peso == char and not transicion_valida:
                     estado_actual = estado_siguiente
@@ -64,6 +57,9 @@ class Grafo:
                     # Registrar el carácter especial encontrado
                     if peso in self.caracteresEspeciales:
                         self.CaracteresEspecialesEncontrados[peso] = self.CaracteresEspecialesEncontrados.get(peso, 0) + 1
+
+                    # Agregar la transición a la tabla
+                    transiciones.append((nodo_actual.estado, estado_actual, char))
                     break
 
             # Si la transición fue válida, creamos el nodo hijo en el árbol de derivación
@@ -72,10 +68,24 @@ class Grafo:
                 nodo_actual.agregar_hijo(hijo)
                 nodo_actual = hijo  # Moverse al siguiente nodo
             else:
-                print(f"Transición inválida desde {estado_actual} con {char}.")
+                print(f"Error: Transición inválida desde {estado_actual} con {char}.")
+                # Mostrar el árbol de derivación hasta el punto del error
+                print("Árbol de derivación (hasta el error):")
+                raiz.mostrar_arbol()
+                # Mostrar la tabla de transiciones antes del error
+                print("Tabla de Transiciones:")
+                self.mostrar_tabla_transicion(transiciones)
                 return False
 
-        # Imprimir el árbol de derivación completo
+        # Si se termina el bucle, la cadena es válida. Mostrar la tabla y el árbol completos.
+        print("Tabla de Transiciones:")
+        self.mostrar_tabla_transicion(transiciones)
         print("Árbol de derivación:")
         raiz.mostrar_arbol()
         return True
+
+    def mostrar_tabla_transicion(self, transiciones):
+        print(f"{'Estado Actual':<15}{'Estado Siguiente':<20}{'Transición (Carácter)'}")
+        print("-" * 50)
+        for estado_actual, estado_siguiente, caracter in transiciones:
+            print(f"{estado_actual:<15}{estado_siguiente:<20}{caracter}")

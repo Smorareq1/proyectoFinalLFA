@@ -1,7 +1,11 @@
 import grafo
+import tkinter as tk
+from tkinter import filedialog
+
 
 def validacion_cadena(cadena):
 
+    print(f"Validando la cadena: {cadena}")
     cintaIzquierda = []
     cintaDerecha = []
     par = True
@@ -21,14 +25,35 @@ def validacion_cadena(cadena):
     print (f"Caracteres especiales encontrados: {g.CaracteresEspecialesEncontrados}")
     print(f"Cinta izquierda: {cintaIzquierda}")
     print(f"Cinta derecha: {cintaDerecha}")
-    g.mostrar_tabla_transicion()
 
 def cadenaToArreglo(cadena):
     return list(cadena)
 
-# Crear el grafo y validar una cadena
-cadenaString = "aba*##b"
-validacion_cadena(cadenaToArreglo(cadenaString))
+def cadenasAValidar(cadena):
+    print("----------------------------------------------------")
+    arregloCadena = cadenaToArreglo(cadena)
+    validacion_cadena(arregloCadena)
+    print("----------------------------------------------------")
+    print("\n")
+
+def abrir_archivo():
+    # Configura el explorador de archivos
+    root = tk.Tk()
+    root.withdraw()  # Oculta la ventana principal de Tkinter
+    archivo = filedialog.askopenfilename(title="Selecciona el archivo de cadenas",
+                                         filetypes=[("Archivos de texto", "*.txt")])
+
+    if archivo:
+        # Abrir y leer el archivo seleccionado
+        with open(archivo, "r") as f:
+            for linea in f:
+                cadena = linea.strip()  # Quitar saltos de línea y espacios extra
+                if cadena:  # Validar solo si la línea no está vacía
+                    cadenasAValidar(cadena)
+
+
+#Importar txt con las cadenas a validar
+abrir_archivo()
 
 
 
