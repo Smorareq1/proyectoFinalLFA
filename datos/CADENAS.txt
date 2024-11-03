@@ -1,1 +1,10 @@
 abaab*#ab*
+abb
+abaaba
+*aba
+aba*#aba
+ababbab
+aba*aaa
+abaa*abba
+aba
+abaa

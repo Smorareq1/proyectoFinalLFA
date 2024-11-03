@@ -54,10 +54,12 @@ class Grafo:
                     eleccion = (estado_siguiente, peso)
 
                     if peso in self.caracteresEspeciales:
-                        self.CaracteresEspecialesEncontrados[peso] = self.CaracteresEspecialesEncontrados.get(peso, 0) + 1
+                        self.CaracteresEspecialesEncontrados[peso] = self.CaracteresEspecialesEncontrados.get(peso,
+                                                                                                              0) + 1
 
                     if peso in self.caracteresDelLenguaje:
-                        self.caracteresDelLenguajeEncontrados[peso] = self.caracteresDelLenguajeEncontrados.get(peso, 0) + 1
+                        self.caracteresDelLenguajeEncontrados[peso] = self.caracteresDelLenguajeEncontrados.get(peso,
+                                                                                                                0) + 1
 
                     transiciones.append((nodo_actual.estado, estado_actual, char))
                     break
@@ -71,9 +73,9 @@ class Grafo:
                 hijo_invalido = NodoDerivacion(estado_actual, f'Error: no hay transición con {char}')
                 nodo_actual.agregar_hijo(hijo_invalido)
                 self.error_transicion = f"Error: Transición inválida desde {estado_actual} con {char}."
-                return raiz, transiciones, False
+                return raiz, transiciones, False  # Retornar inválido si hay error de transición
 
-        return raiz, transiciones, estado_actual == 'q4'  # Retornamos la validación final
+        return raiz, transiciones, True  # Retornamos la cadena como válida siempre que no haya transición inválida
 
     def mostrar_tabla_transicion(self, transiciones):
         print(f"{'Estado Actual':^15}{'Estado Siguiente':^20}{'Transición (Carácter)':^20}")
@@ -143,22 +145,25 @@ class TuringMachine:
         for caracter in self.cadena:
             estado_siguiente = self.grafo.obtener_transicion(self.estado, caracter)
             if estado_siguiente:
+                # Movimiento a la derecha en ambas cintas
                 if self.cinta_alternante:
                     self.cinta1[self.pos1] = caracter
-                    movimiento = 'D'  # Movimiento a la derecha
+                    movimiento = 'D'  # Mueve hacia la derecha
                 else:
                     self.cinta2[self.pos2] = caracter
-                    movimiento = 'D'  # Movimiento a la derecha
+                    movimiento = 'D'  # Mueve hacia la derecha
+
+                # Registrar la transición
                 self.transiciones.append((self.estado, estado_siguiente, caracter, movimiento))
                 self.estado = estado_siguiente
                 self.mover_derecha()
             else:
-                # Suponiendo que no hay transición válida, se podría usar 'P' para parar
+                # Registro de transición inválida y termina
                 self.transiciones.append((self.estado, None, caracter, 'P'))
                 self.grafo.error_transicion = f"Error: Transición inválida desde {self.estado} con '{caracter}'."
-                return False
+                return False  # Termina con error en la transición
 
-        return self.estado == self.grafo.estado_aceptacion
+        return True  # La cadena es válida si no hubo transición inválida
 
     def mostrar_cintas(self):
         print("Cinta 1:", ''.join(self.cinta1))
@@ -182,20 +187,14 @@ class TuringMachine:
         print("=" * 75)
 
     def mostrar_maquina_turing(self):
-        alfabeto = "Alfabeto de símbolos: {'a', 'b', '*', '#'}"
-        alfabeto_entrada = "Alfabeto de entrada: {'a', 'b', '*', '#'}"
-        espacio_blanco = "Espacio en blanco: '␣'"
-        conjunto_estados = "Conjunto de estados: {'q0', 'q1', 'q2', 'q3', 'q4'}"
-        estado_inicial = "Estado inicial: 'q0'"
-        estados_aceptados = "Conjuntos de estados aceptados: {'q4'}"
-
         print("Estructura de la máquina de Turing M_t:")
-        print(alfabeto)
-        print(alfabeto_entrada)
-        print(espacio_blanco)
-        print(conjunto_estados)
-        print(estado_inicial)
-        print(estados_aceptados)
+        print("Alfabeto de símbolos: {'a', 'b', '*', '#'}")
+        print("Alfabeto de entrada: {'a', 'b', '*', '#'}")
+        print("Espacio en blanco: '␣'")
+        print("Conjunto de estados: {'q0', 'q1', 'q2', 'q3', 'q4'}")
+        print("Estado inicial: 'q0'")
+        print("Conjunto de estados de aceptación: {'q4'}")
+
 
 
 
