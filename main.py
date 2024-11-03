@@ -1,45 +1,60 @@
-import grafo
+# main.py
+
+import Validaciones
 import tkinter as tk
 from tkinter import filedialog
 
 
 def validacion_cadena(cadena):
-
     print(f"Validando la cadena: {cadena}")
-    cintaIzquierda = []
-    cintaDerecha = []
-    par = True
-    for char in cadena:
-        if par:
-            cintaIzquierda.append(char)
-        else:
-            cintaDerecha.append(char)
-        # Alterna el valor de `par` en cada iteración
-        par = not par
 
-    # Crear el grafo
-    g = grafo.Grafo()
-    # Validar la cadena
-    validacion = g.validar_cadena(cadena)
-    print(f"La cadena {cadena} es {'aceptada' if validacion else 'rechazada'}.")
-    print (f"Caracteres especiales encontrados: {g.CaracteresEspecialesEncontrados}")
-    print(f"Cinta izquierda: {cintaIzquierda}")
-    print(f"Cinta derecha: {cintaDerecha}")
+    g = Validaciones.Grafo()
+    raiz, transiciones, validacion = g.validar_cadena(cadena)
+
+    if(validacion):
+        print("Cadena válida")
+    else:
+        print("Cadena inválida")
+
+    print("\n")
+    print("Tabla de transiciones:")
+    g.mostrar_tabla_transicion(transiciones)
+    print("\n")
+    g.mostrar_arbol(raiz)
+    print("\n")
+    g.mostrar_caracteres_especiales()
+    print("\n")
+    g.mostrar_caracteres_del_lenguaje()
+
+    print("\n")
+
+    # Mostrar la maquina de Turing
+    print("Máquina de Turing:")
+    tm = Validaciones.TuringMachine(cadena)
+    tm.validar_cadena()
+    tm.mostrar_cintas()
+    tm.mostrar_resultado()
+
+    # Mostrar la estructura de la máquina de Turing
+    tm.mostrar_maquina_turing()
+
 
 def cadenaToArreglo(cadena):
     return list(cadena)
 
+
 def cadenasAValidar(cadena):
-    print("----------------------------------------------------")
+    print("-" * 100)
     arregloCadena = cadenaToArreglo(cadena)
     validacion_cadena(arregloCadena)
-    print("----------------------------------------------------")
+    print("-" * 100)
     print("\n")
+
 
 def abrir_archivo():
     # Configura el explorador de archivos
     root = tk.Tk()
-    root.withdraw()  # Oculta la ventana principal de Tkinter
+    root.withdraw()
     archivo = filedialog.askopenfilename(title="Selecciona el archivo de cadenas",
                                          filetypes=[("Archivos de texto", "*.txt")])
 
@@ -52,9 +67,5 @@ def abrir_archivo():
                     cadenasAValidar(cadena)
 
 
-#Importar txt con las cadenas a validar
+# Importar txt con las cadenas a validar
 abrir_archivo()
-
-
-
-
