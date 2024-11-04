@@ -187,9 +187,9 @@ class TuringMachine:
         print("=" * 75)
 
     def mostrar_maquina_turing(self):
-        print("Estructura de la máquina de Turing M_t:")
+        print("Estructura de la máquina de Turing Mt: M = (Q, Σ, Γ, δ, q₀, ␣ ,F)")
         print("Alfabeto de símbolos: {'a', 'b', '*', '#'}")
-        print("Alfabeto de entrada: {'a', 'b', '*', '#'}")
+        print("Alfabeto de entrada: ", set(self.cadena))
         print("Espacio en blanco: '␣'")
         print("Conjunto de estados: {'q0', 'q1', 'q2', 'q3', 'q4'}")
         print("Estado inicial: 'q0'")
